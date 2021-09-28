@@ -29,7 +29,8 @@ $ docker-compose up --build
 ```shell
 $ cd app/
 $ eb init LOG8415E-TP1 --region us-east-1 --platform python-3.8
-$  eb create cluster1-env 
+$ eb create cluster1-env --instance_type m4.large --envvars "CLUSTER_ID=1"
+$ eb create cluster2-env --instance_type t2.xlarge --envvars "CLUSTER_ID=2"
 ```
 
 to deploy a new version
