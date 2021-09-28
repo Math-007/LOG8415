@@ -32,6 +32,11 @@ $ eb init LOG8415E-TP1 --region us-east-1 --platform python-3.8
 $  eb create cluster1-env 
 ```
 
+to deploy a new version
+```shell
+$ eb deploy cluster1-env
+```
+
 If you would like to connect to an instance : 
 ```shell
 eb ssh --setup
