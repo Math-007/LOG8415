@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  benchmarking:
+    container_name: "log8415-tp1-benchmarking"
+    build:
+      context: .
