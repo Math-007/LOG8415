@@ -1,3 +1,4 @@
+**/.ebextensions/shared_load-balancer.config
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
