@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Exit when any command fails
-set -e
-
 # ╔═══════════╗
 # ║ Constants ║
 # ╚═══════════╝
@@ -55,12 +52,42 @@ then
     exit -1
 fi
 
+# Check if ebcli is installed
+if ! command -v aws &> /dev/null
+then
+    print_error "awscli not found. Please install it: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html"
+    exit -1
+fi
+
+# Check if ebcli is installed
+if ! command -v eb &> /dev/null
+then
+    print_error "ebcli not found. Please install it: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-install.html"
+    exit -1
+fi
+
 # Check current folder 
 if [[ ! -f "app.py" && ! -d ".ebextensions" ]];
 then
     print_error "deploy.sh must be run alongside app.py and .ebextensions."
     exit -1
 fi
+
+# Check if awscli is configured
+aws ec2 create-security-group \
+    --dry-run \
+    --group-name="test-$(date +%s)" \
+    --description="Test security group." 2> /dev/null
+dummy_create_status=$?
+
+if [[ ! $dummy_create_status -eq 254 ]];
+then
+    print_error "Can't create dummy security group. Please check aws cli configuration."
+    exit -1
+fi
+
+# Exit when any command fails
+set -e
 
 # ╔════════════════╗
 # ║ Security Group ║
