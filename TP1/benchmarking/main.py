@@ -10,7 +10,8 @@ logging.basicConfig(
 logger = logging.getLogger("Benchmark App")
 
 sem = Semaphore(1)
-get_url = 'https://api.github.com'
+get_url1 = 'http://LOG8415E-TP1-ELB-2108834343.us-east-1.elb.amazonaws.com/cluster1'
+get_url2 = 'http://LOG8415E-TP1-ELB-2108834343.us-east-1.elb.amazonaws.com/cluster2'
 
 async def main():
     logger.info("Starting benchmark")
@@ -29,7 +30,7 @@ async def send1():
     # sem.acquire()
     async with aiohttp.ClientSession() as session:
         for i in range(1000):
-            async with session.get(get_url) as resp:
+            async with session.get(get_url1) as resp:
                 answer = await resp.json()
                 # print(answer)
                 print('message '+str(i)+' de thread 1')
@@ -39,15 +40,15 @@ async def send2():
     # sem.acquire()
     async with aiohttp.ClientSession() as session:
         for i in range(500):
-            async with session.get(get_url) as resp:
+            async with session.get(get_url2) as resp:
                 answer = await resp.json()
                 # print(answer)
                 print('message '+str(i)+' de thread 2')
             # sem.release()
-        time.sleep(60)
+        await asyncio.sleep(60)
         # sem.acquire()
         for i in range(1000):
-            async with session.get(get_url) as resp:
+            async with session.get(get_url2) as resp:
                 answer = await resp.json()
                 # print(answer)
                 print('message '+str(i)+' de thread 2')
