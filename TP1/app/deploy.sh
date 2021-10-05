@@ -114,15 +114,24 @@ aws ec2 authorize-security-group-ingress \
 # ║ Load-Balancer ║
 # ╚═══════════════╝
 
+
+subnet_id_a=$(aws ec2 describe-subnets \
+  --filters Name=availabilityZone,Values=us-east-1a | jq -r '.Subnets[0].SubnetId'
+  )
+
+subnet_id_b=$(aws ec2 describe-subnets \
+  --filters Name=availabilityZone,Values=us-east-1b | jq -r '.Subnets[0].SubnetId'
+  )
+
 print_progress "Creating load balancer"
 
 
 # Create ELB
-# Subnets are us-east-1a, us-east-1b, us-east-1c
+# Subnets are us-east-1a, us-east-1b
 lb=$(aws elbv2 create-load-balancer \
             --type application \
-            --name $ELB_NAME  \
-            --subnets subnet-0751162a8f498641c subnet-099ec60faafbd7e28 subnet-0fd3f4eab04f11b92 \
+            --name $ELB_NAME \
+            --subnets $subnet_id_a $subnet_id_b \
             --security-groups $group_id)
 
 # Retrieve ELB ARN & URL
