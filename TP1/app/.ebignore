@@ -1,4 +1,3 @@
 .DS_Store
-venv
 *.template
 __pycache__

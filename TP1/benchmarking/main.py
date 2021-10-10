@@ -1,64 +1,62 @@
 import logging
-from threading import *   
-import time
-import asyncio
-import aiohttp
+import os
+from threading import Thread
+from time import sleep
+
+import requests
+
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
     level=logging.INFO,
     datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger("Benchmark App")
 
-sem = Semaphore(1)
-get_url1 = 'http://LOG8415E-TP1-ELB-2108834343.us-east-1.elb.amazonaws.com/cluster1'
-get_url2 = 'http://LOG8415E-TP1-ELB-2108834343.us-east-1.elb.amazonaws.com/cluster2'
+host = os.getenv("ELB_HOST")
+cluster_id = os.getenv("CLUSTER_ID")
 
-async def main():
-    logger.info("Starting benchmark")
+endpoint = f'http://{host}/cluster{cluster_id}'
+
+
+def main():
     """
     TODO : The container runs locally on your laptop and sends two separate threads:
     1000 GET requests sequentially.
     500 GET requests, then one minute sleep, followed by 1000 GET requests.
     """
-    # y = Thread(target=send2, args=())
-    # x = Thread(target=send1, args=())
-    # y.start()
-    # x.start()
-    await asyncio.gather(send1(), send2())
+    logger.info("Starting benchmark")
 
-async def send1():
-    # sem.acquire()
-    async with aiohttp.ClientSession() as session:
-        for i in range(1000):
-            async with session.get(get_url1) as resp:
-                answer = await resp.json()
-                # print(answer)
-                print('message '+str(i)+' de thread 1')
-            # sem.release()
+    thread1 = Thread(target=send1)
+    thread2 = Thread(target=send2)
 
-async def send2():
-    # sem.acquire()
-    async with aiohttp.ClientSession() as session:
-        for i in range(500):
-            async with session.get(get_url2) as resp:
-                answer = await resp.json()
-                # print(answer)
-                print('message '+str(i)+' de thread 2')
-            # sem.release()
-        await asyncio.sleep(60)
-        # sem.acquire()
-        for i in range(1000):
-            async with session.get(get_url2) as resp:
-                answer = await resp.json()
-                # print(answer)
-                print('message '+str(i)+' de thread 2')
-            # sem.release()
+    thread1.start()
+    thread2.start()
 
-async def get():
-    async with aiohttp.ClientSession() as session:
-        for i in range(10):
-            async with session.get(get_url) as resp:
-                answer = await resp.json()
+    thread1.join()
+    thread2.join()
+
+    logger.info("Ending benchmark")
+
+
+def send1():
+    for i in range(1000):
+        response = requests.get(endpoint)
+
+    logger.info("Done send 1")
+
+
+def send2():
+    for i in range(500):
+        response = requests.get(endpoint)
+
+    logger.info("Done send 2 part 1/2, sleeping")
+    sleep(60)
+
+    for i in range(1000):
+        response = requests.get(endpoint)
+
+    logger.info("Done send 2 part 2/2")
+
+
 if __name__ == '__main__':
-    asyncio.run(main())
+    main()
 
