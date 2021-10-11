@@ -3,7 +3,9 @@ version: '3'
 services:
   benchmarking:
     container_name: "log8415-tp1-benchmarking"
+    image: "log8415/tp1-benchmarking"
     build:
       context: .
     volumes:
-      - img:/app/img
+      - ./img:/app/img
+      - $HOME/.aws/credentials:/root/.aws/credentials:ro

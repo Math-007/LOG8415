@@ -11,20 +11,20 @@ def _send1(endpoint):
     for i in range(1000):
         response = requests.get(endpoint)
 
-    logger.info("Done send 1")
+    logger.info("Done scenario 1 part 1/1")
 
 
 def _send2(endpoint):
     for i in range(500):
         response = requests.get(endpoint)
 
-    logger.info("Done send 2 part 1/2, sleeping")
+    logger.info("Done scenario 2 part 1/2, sleeping")
     sleep(60)
 
     for i in range(1000):
         response = requests.get(endpoint)
 
-    logger.info("Done send 2 part 2/2")
+    logger.info("Done scenario 2 part 2/2")
 
 
 def benchmark(endpoint: str) -> None:
