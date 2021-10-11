@@ -2,11 +2,11 @@
 # Execute and show results of your benchmarking
 
 echo "Building docker container"
-docker build -t log8415/tp1-benchmarking:latest .
+docker build -t log8415/tp1-benchmarking:latest benchmarking/
 
 echo "Running docker container"
 docker run -it \
-    -v $CWD/img/:/app/img \
+    -v $CWD/benchmarking/img/:/app/img \
     -v $HOME/.aws/credentials:/root/.aws/credentials:ro \
     log8415/tp1-benchmarking:latest
 
