@@ -31,8 +31,8 @@ def _get_data():
     describe_target_groups = elb.describe_target_groups(LoadBalancerArn=load_balancer_arn)
 
     target_groups_arn = [
-        target_group['TargetGroupArn'].split[':'][-1]
-        for target_group in describe_target_groups
+        target_group['TargetGroupArn'].split(':')[-1]
+        for target_group in describe_target_groups['TargetGroups']
     ]
 
     return load_balancer_host, target_groups_arn
