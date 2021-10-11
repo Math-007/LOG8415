@@ -1,1 +1,8 @@
+# Benchmark
 requests
+
+# Analytics
+jupyter
+boto3
+matplotlib
+numpy

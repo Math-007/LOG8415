@@ -1,19 +1,9 @@
 version: '3'
 
 services:
-  benchmarking_1:
-    container_name: "log8415-tp1-benchmarking_1"
+  benchmarking:
+    container_name: "log8415-tp1-benchmarking"
     build:
       context: .
-    environment:
-      - ELB_HOST=${ELB_HOST}
-      - CLUSTER_ID=1
-  benchmarking_2:
-    container_name: "log8415-tp1-benchmarking_2"
-    build:
-      context: .
-    depends_on:
-      - benchmarking_1
-    environment:
-      - ELB_HOST=${ELB_HOST}
-      - CLUSTER_ID=2
+    volumes:
+      - img:/app/img
