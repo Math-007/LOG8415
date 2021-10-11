@@ -6,7 +6,7 @@ docker build -t log8415/tp1-benchmarking:latest -f benchmarking/Dockerfile bench
 
 echo "Running docker container"
 docker run -it \
-    -v $(`pwd`)/benchmarking/img/:/app/img \
+    -v $(pwd)/benchmarking/img/:/app/img \
     -v $HOME/.aws/credentials:/root/.aws/credentials:ro \
     log8415/tp1-benchmarking:latest
 
