@@ -48,6 +48,13 @@ def analytics(start_time, end_time, cluster_id, target_group):
         }
     ]
 
+    load_balancer_dimensions = [
+        {
+            'Name': 'LoadBalancer',
+            'Value': 'app/LOG8415E-TP1-ELB/34b9577b1309f9c3'
+        },
+    ]
+
     _extract_metric(start_time, end_time, cluster_id, "RequestCount", "Sum", dimensions)
     _extract_metric(start_time, end_time, cluster_id, "RequestCount", "Average", dimensions)
 
@@ -56,5 +63,6 @@ def analytics(start_time, end_time, cluster_id, target_group):
 
     _extract_metric(start_time, end_time, cluster_id, "TargetResponseTime", "Average", dimensions)
 
-    _extract_metric(start_time, end_time, cluster_id, "ProcessedBytes", "Sum", dimensions)
-    _extract_metric(start_time, end_time, cluster_id, "ProcessedBytes", "Average", dimensions)
+    _extract_metric(start_time, end_time, cluster_id, "ProcessedBytes", "Sum", load_balancer_dimensions)
+    _extract_metric(start_time, end_time, cluster_id, "ProcessedBytes", "Average", load_balancer_dimensions)
+

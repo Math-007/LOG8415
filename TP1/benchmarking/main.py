@@ -18,6 +18,19 @@ logger = logging.getLogger("Benchmark App")
 elb = boto3.client(service_name='elbv2', region_name='us-east-1')
 
 
+def _benchmark_and_analytics_per_cluster(endpoint, target_group, cluster_id):
+    logger.info(f"Starting benchmark cluster {cluster_id}")
+    start_date = datetime.utcnow()
+    benchmark(endpoint)
+    end_date = datetime.utcnow()
+    logger.info(f"Ending benchmark cluster {cluster_id}")
+
+    logger.info(f"Starting analytics for cluster {cluster_id}")
+    sleep(360)
+    analytics(start_date, end_date, cluster_id, target_group)
+    logger.info(f"Ending analytics for cluster {cluster_id}")
+
+
 def main():
     logger.info("Starting application")
 
@@ -35,28 +48,8 @@ def main():
     endpoint_1 = f'http://{load_balancer_host}/cluster1'
     endpoint_2 = f'http://{load_balancer_host}/cluster2'
 
-    logger.info("Starting benchmark cluster 1")
-    start_date = datetime.utcnow()
-    benchmark(endpoint_1)
-    end_date = datetime.utcnow()
-    logger.info("Ending benchmark cluster 1")
-
-    logger.info("Starting analytics for cluster 1")
-    sleep(240)
-    analytics(start_date, end_date, 1, "targetgroup/awseb-cluster1-default-2wscr/1905e74e7bea1463")
-
-    logger.info("Ending analytics for cluster 1")
-
-    logger.info("Starting benchmark cluster 2")
-    start_date = datetime.utcnow()
-    benchmark(endpoint_2)
-    end_date = datetime.utcnow()
-    logger.info("Ending benchmark cluster 2")
-
-    logger.info("Starting analytics for cluster 2")
-    sleep(240)
-    analytics(start_date, end_date, 2, "targetgroup/awseb-cluster2-default-gj59n/8a581d8a8527c3b9")
-    logger.info("Ending analytics for cluster 2")
+    _benchmark_and_analytics_per_cluster(endpoint_1, "targetgroup/awseb-cluster1-default-2wscr/1905e74e7bea1463", 1)
+    _benchmark_and_analytics_per_cluster(endpoint_2, "targetgroup/awseb-cluster2-default-gj59n/8a581d8a8527c3b9", 2)
 
 
 if __name__ == '__main__':
