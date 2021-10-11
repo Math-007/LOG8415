@@ -18,6 +18,26 @@ logger = logging.getLogger("Benchmark App")
 elb = boto3.client(service_name='elbv2', region_name='us-east-1')
 
 
+def _get_data():
+    load_balancers = elb.describe_load_balancers()
+    load_balancer = [
+        load_balancer for load_balancer in load_balancers['LoadBalancers']
+        if load_balancer['LoadBalancerName'] == 'LOG8415E-TP1-ELB'
+    ][0]
+
+    load_balancer_host = load_balancer['DNSName']
+
+    load_balancer_arn = load_balancer['LoadBalancerArn']
+    describe_target_groups = elb.describe_target_groups(LoadBalancerArn=load_balancer_arn)
+
+    target_groups_arn = [
+        target_group['TargetGroupArn'].split[':'][-1]
+        for target_group in describe_target_groups
+    ]
+
+    return load_balancer_host, target_groups_arn
+
+
 def _benchmark_and_analytics_per_cluster(endpoint, target_group, cluster_id):
     logger.info(f"Starting benchmark cluster {cluster_id}")
     start_date = datetime.utcnow()
@@ -35,21 +55,13 @@ def main():
     logger.info("Starting application")
 
     logger.info("Getting load balancer")
-
-    load_balancers = elb.describe_load_balancers()
-    load_balancer = [
-        load_balancer for load_balancer in load_balancers['LoadBalancers']
-        if load_balancer['LoadBalancerName'] == 'LOG8415E-TP1-ELB'
-    ][0]
-
-    load_balancer_arn = load_balancer['LoadBalancerArn']
-    load_balancer_host = load_balancer['DNSName']
+    load_balancer_host, target_groups = _get_data()
 
     endpoint_1 = f'http://{load_balancer_host}/cluster1'
     endpoint_2 = f'http://{load_balancer_host}/cluster2'
 
-    _benchmark_and_analytics_per_cluster(endpoint_1, "targetgroup/awseb-cluster1-default-2wscr/1905e74e7bea1463", 1)
-    _benchmark_and_analytics_per_cluster(endpoint_2, "targetgroup/awseb-cluster2-default-gj59n/8a581d8a8527c3b9", 2)
+    _benchmark_and_analytics_per_cluster(endpoint_1, target_groups[0], 1)
+    _benchmark_and_analytics_per_cluster(endpoint_2, target_groups[1], 2)
 
 
 if __name__ == '__main__':
