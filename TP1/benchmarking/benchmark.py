@@ -27,6 +27,12 @@ def _send2(endpoint):
     logger.info("Done scenario 2 part 2/2")
 
 
+def _send_demo(endpoint, request_count):
+    for i in range(request_count):
+        response = requests.get(endpoint)
+
+    logger.info(f"Done {request_count} requests demo on endpoint: {request_count}")
+
 def benchmark(endpoint: str) -> None:
     """
     TODO : The container runs locally on your laptop and sends two separate threads:
@@ -42,3 +48,12 @@ def benchmark(endpoint: str) -> None:
 
     thread1.join()
     thread2.join()
+
+def benchmark_demo(endpoint: str, cluster_id: int) -> None:
+    """
+    50 GET requests on cluster1 and 150 GET requests on cluster2
+    """
+    logger.info(f"Benchmark: demo mode on cluster{cluster_id} @ {endpoint}")
+    request_count = 50 if cluster_id == 1 else 150
+    _send_demo(endpoint, request_count)
+    

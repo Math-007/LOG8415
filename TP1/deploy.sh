@@ -14,6 +14,12 @@ NC='\033[0m' # No Color
 # Names
 ELB_NAME='LOG8415E-TP1-ELB'
 
+# Instances
+# CLUSTER_1_INSTANCE_TYPE="m4.large"
+# CLUSTER_2_INSTANCE_TYPE="t2.xlarge"
+CLUSTER_1_INSTANCE_TYPE="t2.micro"
+CLUSTER_2_INSTANCE_TYPE="t2.micro"
+
 # Other
 START=`date +%s`
 
@@ -184,7 +190,7 @@ sed "s/{{CLUSTER_ID}}/$cluster_id/g" .ebextensions/shared_load-balancer.config.t
 
 # Create cluster 1
 eb create cluster1-env \
-    --instance_type "m4.large" \
+    --instance_type $CLUSTER_1_INSTANCE_TYPE \
     --envvars "CLUSTER_ID=$cluster_id" \
     --elb-type application \
     --shared-lb $ELB_NAME
@@ -204,7 +210,7 @@ sed "s/{{CLUSTER_ID}}/$cluster_id/g" .ebextensions/shared_load-balancer.config.t
 
 # Create cluster 2
 eb create cluster2-env \
-    --instance_type "t2.xlarge" \
+    --instance_type $CLUSTER_2_INSTANCE_TYPE \
     --envvars "CLUSTER_ID=$cluster_id" \
     --elb-type application \
     --shared-lb $ELB_NAME

@@ -5,7 +5,7 @@ from time import sleep
 import boto3
 
 from analytics import analytics
-from benchmark import benchmark
+from benchmark import benchmark, benchmark_demo
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
@@ -41,7 +41,8 @@ def _get_data():
 def _benchmark_and_analytics_per_cluster(endpoint, target_group, cluster_id):
     logger.info(f"Starting benchmark cluster {cluster_id}")
     start_date = datetime.utcnow()
-    benchmark(endpoint)
+    # benchmark(endpoint)
+    benchmark_demo(endpoint, cluster_id)
     end_date = datetime.utcnow()
     logger.info(f"Ending benchmark cluster {cluster_id}")
 
