@@ -1,3 +1,4 @@
+# From  https://docs.microsoft.com/en-us/azure/developer/terraform/create-linux-virtual-machine-with-infrastructure
 # Configure the Microsoft Azure Provider
 terraform {
   required_providers {
@@ -136,6 +137,25 @@ resource "azurerm_linux_virtual_machine" "hadoop_spark_vm" {
     username   = "azureuser"
     public_key = tls_private_key.ssh_key.public_key_openssh
   }
+
+  tags = {
+    environment = var.environement_name
+  }
+}
+
+resource "azurerm_virtual_machine_extension" "vm_extension" {
+  name                      = "run_init-vm"
+  virtual_machine_id        = azurerm_linux_virtual_machine.hadoop_spark_vm.id
+  publisher                 = "Microsoft.Azure.Extensions"
+  type                      = "CustomScript"
+  type_handler_version      = "2.1"
+
+  settings = <<SETTINGS
+    {
+        "script": "${filebase64("${path.module}/init-vm.sh")}"
+    }
+SETTINGS
+
 
   tags = {
     environment = var.environement_name
