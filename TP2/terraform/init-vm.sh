@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
 # Constants
+VM_USER="azureuser"
 HADOOP_VERSION="3.3.1"
 SPARK_VERSION="3.2.0"
 
@@ -46,7 +47,7 @@ sudo apt-get update \
     && sudo apt-get install -y python3 default-jdk-headless
 
 # Update bashrc
-cat <<EOF >> ~/.bashrc
+cat <<EOF >> /home/$VM_USER/.bashrc
 
 # Spark
 export SPARK_HOME=$SPARK_HOME
