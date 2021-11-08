@@ -18,7 +18,7 @@ resource "azurerm_resource_group" "resource_group" {
   location = var.resources_location
 
   tags = {
-    environment = var.environement_name
+    environment = var.environment_name
   }
 }
 
@@ -30,7 +30,7 @@ resource "azurerm_virtual_network" "virtual_network" {
   resource_group_name = azurerm_resource_group.resource_group.name
 
   tags = {
-    environment = var.environement_name
+    environment = var.environment_name
   }
 }
 
@@ -50,7 +50,7 @@ resource "azurerm_public_ip" "public_ip" {
   allocation_method   = "Dynamic"
 
   tags = {
-    environment = var.environement_name
+    environment = var.environment_name
   }
 }
 
@@ -73,7 +73,7 @@ resource "azurerm_network_security_group" "security_group" {
   }
 
   tags = {
-    environment = var.environement_name
+    environment = var.environment_name
   }
 }
 
@@ -91,7 +91,7 @@ resource "azurerm_network_interface" "network_interface" {
   }
 
   tags = {
-    environment = var.environement_name
+    environment = var.environment_name
   }
 }
 
@@ -139,16 +139,16 @@ resource "azurerm_linux_virtual_machine" "hadoop_spark_vm" {
   }
 
   tags = {
-    environment = var.environement_name
+    environment = var.environment_name
   }
 }
 
 resource "azurerm_virtual_machine_extension" "vm_extension" {
-  name                      = "run_init-vm"
-  virtual_machine_id        = azurerm_linux_virtual_machine.hadoop_spark_vm.id
-  publisher                 = "Microsoft.Azure.Extensions"
-  type                      = "CustomScript"
-  type_handler_version      = "2.1"
+  name                 = "run_init-vm"
+  virtual_machine_id   = azurerm_linux_virtual_machine.hadoop_spark_vm.id
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.1"
 
   settings = <<SETTINGS
     {
@@ -158,6 +158,6 @@ SETTINGS
 
 
   tags = {
-    environment = var.environement_name
+    environment = var.environment_name
   }
 }

@@ -2,7 +2,7 @@ variable "name_prefix" {
   default = "log8415e-tp2_"
 }
 
-variable "environement_name" {
+variable "environment_name" {
   default = "log8415e-tp2"
 }
 
