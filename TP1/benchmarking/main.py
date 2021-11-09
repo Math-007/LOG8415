@@ -47,7 +47,8 @@ def _benchmark_and_analytics_per_cluster(endpoint, target_group, cluster_id):
     logger.info(f"Ending benchmark cluster {cluster_id}")
 
     logger.info(f"Starting analytics for cluster {cluster_id}")
-    sleep(360)
+    #sleep(360)
+    sleep(30)
     analytics(start_date, end_date, cluster_id, target_group)
     logger.info(f"Ending analytics for cluster {cluster_id}")
 

@@ -31,7 +31,7 @@ def _send_demo(endpoint, request_count):
     for i in range(request_count):
         response = requests.get(endpoint)
 
-    logger.info(f"Done {request_count} requests demo on endpoint: {request_count}")
+    logger.info(f"Done {request_count} requests demo on endpoint: {endpoint}")
 
 def benchmark(endpoint: str) -> None:
     """

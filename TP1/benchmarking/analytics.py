@@ -11,7 +11,7 @@ def _extract_metric(start_time, end_time, cluster_id, metric_name, statistic, di
     response = cloudwatch.get_metric_statistics(
         Namespace='AWS/ApplicationELB',
         Period=1,
-        StartTime=start_time - timedelta(minutes=3),
+        StartTime=start_time - timedelta(minutes=10),
         EndTime=end_time + timedelta(minutes=5),
         MetricName=metric_name,
         Statistics=[statistic],
@@ -40,7 +40,7 @@ def analytics(start_time, end_time, cluster_id, target_group):
     dimensions = [
         {
             'Name': 'LoadBalancer',
-            'Value': 'app/LOG8415E-TP1-ELB/34b9577b1309f9c3'
+            'Value': 'app/LOG8415E-TP1-ELB/3187e95acf5226dc'
         },
         {
             "Name": "TargetGroup",
@@ -51,7 +51,7 @@ def analytics(start_time, end_time, cluster_id, target_group):
     load_balancer_dimensions = [
         {
             'Name': 'LoadBalancer',
-            'Value': 'app/LOG8415E-TP1-ELB/34b9577b1309f9c3'
+            'Value': 'app/LOG8415E-TP1-ELB/3187e95acf5226dc'
         },
     ]
 
