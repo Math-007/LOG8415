@@ -11,6 +11,6 @@ variable "resources_location" {
 }
 
 variable "vm_size" {
-  default = "Standard_D11_v2"
+  default = "Standard_D4s_v3"
 }
     
