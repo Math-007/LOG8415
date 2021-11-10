@@ -43,8 +43,11 @@ tar xf /tmp/spark.tar.gz -C /tmp/
 sudo mv "/tmp/spark-$SPARK_VERSION-bin-hadoop3.2/" $SPARK_HOME
 
 # Install required packages
-sudo apt-get update \
-    && sudo apt-get install -y python3 default-jdk-headless
+sudo apt-get update
+sudo apt-get install -y python3 \
+    default-jdk-headless \
+    maven \
+    git
 
 # Update bashrc
 cat <<EOF >> /home/$VM_USER/.bashrc
@@ -68,5 +71,5 @@ export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\$HADOOP_HOME/lib/native
 export JAVA_HOME=/usr/lib/jvm/default-java
 EOF
 
-# Download dataset
-# TODO
+# Download repo
+git clone https://github.com/Math-007/LOG8415.git /home/$VM_USER/LOG8415
