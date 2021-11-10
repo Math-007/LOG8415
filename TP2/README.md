@@ -8,12 +8,26 @@ Compile:
 ```shell
 cd wordcount/hadoop
 hadoop com.sun.tools.javac.Main WordCount.java
-jar cf wc.jar WordCount*.class
+jar cf word-count-hadoop.jar WordCount*.class
+rm -f *.class
 ```
 Execute:
 ```shell
 hdfs dfs -rm -r output
-hadoop jar wc.jar WordCount ../../dataset output
+hadoop jar word-count-hadoop.jar WordCount ../../dataset output
+```
+
+### Spark
+
+Compile:
+```shell
+cd wordcount/spark
+mvn package
+```
+Execute:
+```shell
+hdfs dfs -rm -r output
+spark-submit --class WordCount target/word-count-spark-1.0-jar-with-dependencies.jar ../../dataset output
 ```
 
 ## Terraform
