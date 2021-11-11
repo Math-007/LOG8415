@@ -152,7 +152,7 @@ resource "azurerm_virtual_machine_extension" "vm_extension" {
 
   settings = <<SETTINGS
     {
-        "script": "${filebase64("${path.module}/init-vm.sh")}"
+        "script": "${filebase64("${path.module}/../scripts/init-vm.sh")}"
     }
 SETTINGS
 
