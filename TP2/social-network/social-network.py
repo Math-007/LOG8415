@@ -9,7 +9,7 @@ RECOMMENDED_LIST_LENGTH = 10
 
 def main():
     if len(sys.argv) != 3:
-        print("Usage: spark-submit socialNetwork.py <inputfile> <outputPath>", file=sys.stderr)
+        print("Usage: spark-submit social-network.py <inputfile> <outputPath>", file=sys.stderr)
         exit(-1)
 
     spark = SparkSession.builder.appName("Friend recommendations app").getOrCreate()
