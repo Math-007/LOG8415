@@ -47,7 +47,8 @@ def main():
     recommended_friends = combined_user_recommendations.map(
         lambda data: (
             data[0],
-            sorted(data[1], key=lambda recommendation: recommendation[1])[:RECOMMENDED_LIST_LENGTH]
+            # Sort by recommendation score and by user id if tied
+            sorted(data[1], key=lambda recommendation: (recommendation[1], recommendation[0]))[:RECOMMENDED_LIST_LENGTH]
         )
     )
 
@@ -59,8 +60,13 @@ def main():
     # Create output
     output_rdd = recommended_friends.union(no_friends_to_recommend_rdd)
     output_rdd \
+        .map(lambda data: (data[0], [recommended_person for recommended_person, score in data[1]])) \
+        .map(lambda data: (data[0], ','.join(data[1]) if data[1] else '')) \
         .coalesce(1) \
-        .saveAsTextFile(sys.argv[2])
+        .toDF(["User", "Recommendations"]) \
+        .write \
+        .mode("overwrite") \
+        .csv(sys.argv[2], sep="\t", emptyValue='\u0000')
 
     spark.stop()
 
