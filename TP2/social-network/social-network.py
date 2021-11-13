@@ -2,22 +2,21 @@ import itertools
 import sys
 
 from pyspark.sql import SparkSession
-from pyspark.sql.types import StructType, StructField, StringType
 
-if __name__ == "__main__":
+ALL_READY_CONNECTED_PENALTY = -sys.maxsize
+RECOMMENDED_LIST_LENGTH = 10
 
-    ALL_READY_CONNECTED_PENALTY = -sys.maxsize
-    RECOMMENDED_LIST_LENGTH = 10
 
+def main():
     if len(sys.argv) != 3:
-        print("Usage: spark-submit socialNetwork.py <inputfile> <outputfile>", file=sys.stderr)
+        print("Usage: spark-submit socialNetwork.py <inputfile> <outputPath>", file=sys.stderr)
         exit(-1)
 
     spark = SparkSession.builder.appName("Friend recommendations app").getOrCreate()
 
     df = spark.read.csv(sys.argv[1], sep='\t')
     df_rdd = df.rdd \
-        .filter(lambda data: len(data) == 2 and data[1] is not None) \
+        .filter(lambda data: data[1] is not None) \
         .map(lambda data: (data[0], data[1].split(',')))
 
     already_friends = df_rdd.flatMap(
@@ -26,7 +25,6 @@ if __name__ == "__main__":
     potential_recommended_friends = df_rdd.flatMap(
         lambda data: [(friends_pair, 1) for friends_pair in itertools.permutations(data[1], 2)]
     )
-
     friends_recommendation_score = already_friends.union(potential_recommended_friends)
 
     raw_user_recommendation = friends_recommendation_score.reduceByKey(
@@ -42,17 +40,6 @@ if __name__ == "__main__":
 
     # To avoid using groupByKey:
     # https://spark.apache.org/docs/3.1.1/api/python/reference/api/pyspark.RDD.combineByKey.html
-    def to_list(a):
-        return [a]
-
-    def append(a, b):
-        a.append(b)
-        return a
-
-    def extend(a, b):
-        a.extend(b)
-        return a
-
     combined_user_recommendations = user_recommendation.combineByKey(
         to_list, append, extend
     )
@@ -64,6 +51,33 @@ if __name__ == "__main__":
         )
     )
 
-    recommended_friends.toDF(['user', '(friend, score)']).show()
+    # Don't forget the users who don't have friends and are ignored
+    no_friends_to_recommend_rdd = df.rdd \
+        .filter(lambda data: data[1] is None) \
+        .map(lambda data: (data[0], []))
 
-    print("")
+    # Create output
+    output_rdd = recommended_friends.union(no_friends_to_recommend_rdd)
+    output_rdd \
+        .coalesce(1) \
+        .saveAsTextFile(sys.argv[2])
+
+    spark.stop()
+
+
+def to_list(a):
+    return [a]
+
+
+def append(a, b):
+    a.append(b)
+    return a
+
+
+def extend(a, b):
+    a.extend(b)
+    return a
+
+
+if __name__ == "__main__":
+    main()
